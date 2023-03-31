@@ -1,47 +1,60 @@
 // Needed packages below
 const inquirer = require('inquirer');
 const fs = require('fs');
-const shapesJS = require('./lib/shapes'); //"Imports" shapes file
+const {Circle, Triange, Square} = require('./lib/shapes'); //"Imports" shapes file
 
 const prompts = [
     {
         type: 'input',
         name: 'text',
         message: 'Enter up to three characters',
+
+        validate: function(characters) {
+            if (characters.length > 3) {
+                return 'Must be 3 characters or less';
+            }
+            return true;
+        }
     },
     {
         type: 'input',
         name: 'textColor',
-        message: 'Enter a text color',
+        message: 'Enter a text color:',
     },
     {
         type: 'list',
-        name: 'shape',
-        message: 'What is your preferred license?',
+        name: 'shapeList',
+        message: 'What is your preferred shape?',
         choices: ['Circle', 'Triangle', 'Square'],
     },
     {
         type: 'input',
         name: 'shapeColor',
-        message: 'Enter a shape color',
+        message: 'Enter a shape color:',
     },
 ];
 
-function writeToFile(fileName, data) {
-    fs.writeFile(fileName, data, (err) =>
-        err ? console.log(err) : console.log('Sucessfully created SVG file!')
-    );
-}
+inquirer.prompt(questions).then(({text,textColor, shapeList, shapeColor}) => {
+    let shape;
+  
+    switch (shapeList) {
+      case 'Circle':
+        shape = new Circle();
+        break;
+      case 'Triangle':
+        shape = new Triangle();
+        break;
+      default:
+        shape = new Square();
+        break;
+    }
 
-function init() {
-    inquirer
-    .prompt(questions)
-    .then(data => {
-        console.log(data);
-        const markdownContent = generateMarkdown(data);
-        console.log(markdownContent)
-        writeToFile('./examples/logo.svg', markdownContent);
-    })
-}
-
-init();
+  shape.setColor(shapeColor)
+  svg.setText(text, textColor)
+  svg.setShape(shape)
+  return writeFile("./examples/logo.svg", svg.render())
+  
+  })
+  .then(() => console.log("Generated logo.svg"))
+  
+  .catch(err => console.log(err));
