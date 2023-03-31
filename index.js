@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 const {Circle, Triange, Square} = require('./lib/shapes'); //"Imports" shapes file
-
+//User Inputs Below
 const prompts = [
     {
         type: 'input',
@@ -11,7 +11,7 @@ const prompts = [
 
         validate: function(characters) {
             if (characters.length > 3) {
-                return 'Must be 3 characters or less';
+                return 'Must be 3 characters or less'; //Checks for character length
             }
             return true;
         }
@@ -33,8 +33,8 @@ const prompts = [
         message: 'Enter a shape color:',
     },
 ];
-
-inquirer.prompt(questions).then(({text,textColor, shapeList, shapeColor}) => {
+//Prompting questions and then taking data and creating switch function with "fat arrow"
+inquirer.prompt(prompts).then(({text,textColor, shapeList, shapeColor}) => {
     let shape;
   
     switch (shapeList) {
@@ -49,12 +49,13 @@ inquirer.prompt(questions).then(({text,textColor, shapeList, shapeColor}) => {
         break;
     }
 
-  shape.setColor(shapeColor)
-  svg.setText(text, textColor)
-  svg.setShape(shape)
-  return writeFile("./examples/logo.svg", svg.render())
+  shape.setColor(shapeColor) //Setting color based on user input to be rendered
+  svg.setText(text, textColor) //Setting text color based on user input to be rendered
+  svg.setShape(shape) //Setting shape from list to be rendered
+
+  return writeFile("./examples/logo.svg", svg.render()) //Writing to an SVG file
   
   })
-  .then(() => console.log("Generated logo.svg"))
+  .then(() => console.log("Generated SVG File!")) //Success message
   
-  .catch(err => console.log(err));
+  .catch(err => console.log(err)); //Error message
