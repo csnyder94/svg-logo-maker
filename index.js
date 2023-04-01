@@ -1,17 +1,19 @@
-// Needed packages below
+// Imports required packages and classes
 const inquirer = require('inquirer');
-const fs = require('fs');
-const {Circle, Triange, Square} = require('./lib/shapes'); //"Imports" shapes file
-//User Inputs Below
+const {writeFile} = require('fs/promises');
+const {Circle, Triangle, Square, finalShapeRender} = require('./lib/shapes');
+
+// Defines prompts for user inputs
 const prompts = [
     {
         type: 'input',
         name: 'text',
         message: 'Enter up to three characters',
 
+        // Validates the input length
         validate: function(characters) {
             if (characters.length > 3) {
-                return 'Must be 3 characters or less'; //Checks for character length
+                return 'Must be 3 characters or less';
             }
             return true;
         }
@@ -33,29 +35,46 @@ const prompts = [
         message: 'Enter a shape color:',
     },
 ];
-//Prompting questions and then taking data and creating switch function with "fat arrow"
-inquirer.prompt(prompts).then(({text,textColor, shapeList, shapeColor}) => {
-    let shape;
-  
-    switch (shapeList) {
-      case 'Circle':
-        shape = new Circle();
-        break;
-      case 'Triangle':
-        shape = new Triangle();
-        break;
-      default:
-        shape = new Square();
-        break;
+
+// Prompts the user inputs and generates the SVG file
+async function generateSVG() {
+    try {
+      // Awaits user inputs
+      const { text, textColor, shapeList, shapeColor } = await inquirer.prompt(prompts);
+      
+      // Determines which shape was chosen
+      let shape;
+      switch (shapeList) {
+
+        case 'Circle':
+          shape = new Circle();
+          break;
+
+        case 'Triangle':
+          shape = new Triangle();
+          break;
+
+        case 'Square':
+          shape = new Square();
+          break;
+      }
+
+      // Sets the color of the chosen shape
+      shape.setShapeColor(shapeColor);
+      
+      // Creates a finalShapeRender object and sets the text and shape
+      const logoRender = new finalShapeRender();
+
+      logoRender.setShape(shape);
+      logoRender.setText(text, textColor);
+     
+      // Writes the generated SVG file
+      await writeFile('./examples/logo.svg', logoRender.render());
+      console.log('Generated SVG File!');
+    } catch (error) {
+      console.log(error);
     }
-
-  shape.setColor(shapeColor) //Setting color based on user input to be rendered
-  svg.setText(text, textColor) //Setting text color based on user input to be rendered
-  svg.setShape(shape) //Setting shape from list to be rendered
-
-  return writeFile("./examples/logo.svg", svg.render()) //Writing to an SVG file
+  }
   
-  })
-  .then(() => console.log("Generated SVG File!")) //Success message
-  
-  .catch(err => console.log(err)); //Error message
+  // Calls function to start the program
+  generateSVG();
