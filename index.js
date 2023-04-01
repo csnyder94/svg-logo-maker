@@ -8,12 +8,12 @@ const prompts = [
     {
         type: 'input',
         name: 'text',
-        message: 'Enter up to three characters',
+        message: 'Enter between one and three characters',
 
         // Validates the input length
-        validate: function(characters) {
-            if (characters.length > 3) {
-                return 'Must be 3 characters or less';
+        validate: (characters) => {
+            if (characters.length === 0 || characters.length > 3) {
+                return 'Must be between 1 and 3 characters';
             }
             return true;
         }
@@ -70,7 +70,7 @@ async function generateSVG() {
      
       // Writes the generated SVG file
       await writeFile('./examples/logo.svg', logoRender.render());
-      console.log('Generated SVG File!');
+      console.log('Generated logo.svg');
     } catch (error) {
       console.log(error);
     }
