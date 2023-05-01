@@ -42,7 +42,6 @@ To use the application from the command line, run the following command:
 ```
 node index.js
 ```
-For a video walkthrough using the application, go to the following link: https://drive.google.com/file/d/1rX5hz74IFnZQ-lqRlVGPKZfSAxshkz7Y/view
 
 ## Tests
 
